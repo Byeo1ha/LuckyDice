@@ -62,5 +62,10 @@ public class DiceView : MonoBehaviour
                 )
                 .SetEase(Ease.OutCubic)
         );
+
+        rollSequence.OnComplete(() =>
+        {
+           transform.localRotation = Quaternion.Euler(targetRotation); 
+        });
     }
 }

@@ -22,9 +22,6 @@ public class DiceRoll : MonoBehaviour
         outLine.SetActive(IsSelected);
         
         CurrentResult = Random.Range(1, 7);
-
-        Debug.Log(CurrentResult);
-
         diceView.PlayRoll(CurrentResult);
         
         return CurrentResult;

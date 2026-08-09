@@ -25,16 +25,11 @@ public class TurnUI : MonoBehaviour
         player2Power.gameObject.SetActive(false);
     }
 
-    private void Start()
-    {
-        turnAlertPannelTransform.anchoredPosition = new Vector3(2100f, 0f, 0f);
-    }
-
     public async UniTask ShowAlertPannel()
     {
         if (turnAlertPannelTransform == null) return;
 
-        turnAlertPannelTransform.anchoredPosition = new Vector3(2100f, 0f, 0f);
+        turnAlertPannelTransform.anchoredPosition = new Vector3(2100f, 200f, 0f);
 
         alertSequence?.Kill();
         alertSequence = DOTween.Sequence();
@@ -42,12 +37,12 @@ public class TurnUI : MonoBehaviour
         alertSequence
             .Append(
                 turnAlertPannelTransform
-                .DOAnchorPos(Vector3.zero, 0.8f)
+                .DOAnchorPos(new Vector3(0f, 200f, 0f), 0.8f)
             )
             .AppendInterval(0.8f)
             .Append(
                 turnAlertPannelTransform
-                .DOAnchorPos(new Vector3(-2100f, 0f, 0f), 0.8f)
+                .DOAnchorPos(new Vector3(-2100f, 200f, 0f), 0.8f)
             )
             .AppendInterval(1f);
 

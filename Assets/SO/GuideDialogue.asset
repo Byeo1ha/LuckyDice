@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 407977510cbdeeb4195f2921ae512c3c, type: 3}
   m_Name: GuideDialogue
   m_EditorClassIdentifier: Assembly-CSharp::GuideDialogueData
-  player1AttackTurn: A
-  player1DefenseTurn: B
-  player2AttackTurn: C
-  player2DefenseTurn: D
+  player1AttackTurn: "\uD50C\uB808\uC774\uC5B4 1\uC758 \uACF5\uACA9 \uCC28\uB840\uC785\uB2C8\uB2E4."
+  player1DefenseTurn: "\uD50C\uB808\uC774\uC5B4 1\uC758 \uC218\uBE44 \uCC28\uB840\uC785\uB2C8\uB2E4."
+  player2AttackTurn: "\uD50C\uB808\uC774\uC5B4 2\uC758 \uACF5\uACA9 \uCC28\uB840\uC785\uB2C8\uB2E4."
+  player2DefenseTurn: "\uD50C\uB808\uC774\uC5B4 2\uC758 \uC218\uBE44 \uCC28\uB840\uC785\uB2C8\uB2E4."

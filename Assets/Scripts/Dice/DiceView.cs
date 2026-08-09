@@ -21,11 +21,20 @@ public class DiceView : MonoBehaviour
         rollSequence?.Kill();
 
         Vector3 targetRotation = resultRotations[result - 1];
-
         Vector3 spinRotation = targetRotation + new Vector3(
             720f,
             1080f,
             720f
+        );
+        Vector3 randomPosition1 = startPosition + new Vector3(
+            Random.Range(-0.2f, 0.2f),
+            2f,
+            Random.Range(-0.2f, 0.2f)
+        );
+        Vector3 randomPosition2 = startPosition + new Vector3(
+            Random.Range(-0.4f, 0.4f),
+            0f,
+            Random.Range(-0.4f, 0.4f)
         );
 
         rollSequence = DOTween.Sequence();
@@ -33,22 +42,12 @@ public class DiceView : MonoBehaviour
         rollSequence
             .Append(
                 transform
-                    .DOLocalMoveY(startPosition.y + 2f, 0.25f)
-                    .SetEase(Ease.InQuad)
+                    .DOLocalMove(randomPosition1, 0.5f)
+                    .SetEase(Ease.OutQuad)
             )
             .Append(
                 transform
-                    .DOLocalMoveY(startPosition.y, 0.35f)
-                    .SetEase(Ease.InQuad)
-            )
-            .Append(
-                transform
-                    .DOLocalMoveY(startPosition.y + 0.2f, 0.08f)
-                    .SetEase(Ease.InQuad)
-            )
-            .Append(
-                transform
-                    .DOLocalMoveY(startPosition.y, 0.1f)
+                    .DOLocalMove(randomPosition2, 0.25f)
                     .SetEase(Ease.InQuad)
             );
 
@@ -65,7 +64,8 @@ public class DiceView : MonoBehaviour
 
         rollSequence.OnComplete(() =>
         {
-           transform.localRotation = Quaternion.Euler(targetRotation); 
+            transform.localPosition = randomPosition2;
+            transform.localRotation = Quaternion.Euler(targetRotation); 
         });
     }
 }

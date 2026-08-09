@@ -29,8 +29,6 @@ public class DiceController : MonoBehaviour
             int result = diceRolls[i].Roll();
             power.Value += result;
         }
-
-        Debug.Log($"총 피해량 : {power.Value}");
     }
 
     public void ReRoll()
@@ -64,8 +62,6 @@ public class DiceController : MonoBehaviour
         }
 
         currentReRollCount --;
-
-        Debug.Log($"총 피해량 : {power.Value} / 잔여 리롤 횟수 : {currentReRollCount}");
     }
 
     public async UniTask ResetDice()

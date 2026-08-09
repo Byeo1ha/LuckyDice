@@ -72,7 +72,8 @@ public class DiceController : MonoBehaviour
     {
         power.Value = 0;
 
-        await UniTask.Delay(TimeSpan.FromSeconds(1f));
+        await UniTask.NextFrame();
+
         StartRoll();
     }
 }

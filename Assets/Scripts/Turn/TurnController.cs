@@ -1,4 +1,3 @@
-using System;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using R3;
@@ -11,7 +10,9 @@ public class TurnController : MonoBehaviour
 
     private DiceController diceController;
     private TurnGuideText turnGuideText;
-    private PlayerInfo playerInfo;
+
+    private PlayerInfo player1;
+    private PlayerInfo player2;
 
     private int power;
     private int player1AttackPower;
@@ -32,10 +33,14 @@ public class TurnController : MonoBehaviour
     [Inject]
     public void Construct(
         DiceController diceController,
-        PlayerInfo playerInfo)
+        [Key(PlayerKey.Player1)]PlayerInfo player1,
+        [Key(PlayerKey.Player2)]PlayerInfo player2
+        )
     {
         this.diceController = diceController;
-        this.playerInfo = playerInfo;
+        this.player1 = player1;
+        this.player2 = player2;
+        
     }
 
     private void Awake()
@@ -67,7 +72,6 @@ public class TurnController : MonoBehaviour
                 break;
             case BattlePhase.Player2Attack:
                 player2AttackPower = power;
-                Debug.Log($"플레이어의 2 공격력 : {player2AttackPower}");
                 StartPlayer1Defense();
                 break;
             case BattlePhase.Player1Defense:
@@ -84,7 +88,7 @@ public class TurnController : MonoBehaviour
         await turnUI.ShowAlertPannel();
 
         Player1TurnDefense();
-        diceController.ResetDice().Forget();
+        diceController.ResetDice();
     }
 
     private async void StartPlayer2Defense()
@@ -94,7 +98,7 @@ public class TurnController : MonoBehaviour
         await turnUI.ShowAlertPannel();
 
         Player2TurnDefense();
-        diceController.ResetDice().Forget();
+        diceController.ResetDice();
     }
 
     private async void StartPlayer1AttackFight()
@@ -107,9 +111,9 @@ public class TurnController : MonoBehaviour
         
         await turnUI.FightUI(player1AttackPower, player2DefensePower);
 
-        playerInfo.Player2Damaged(damage);
+        player2.PlayerDamaged(damage);
         battlePhase = BattlePhase.Player2Attack;
-        diceController.ResetDice().Forget();
+        diceController.ResetDice();
 
         Player2TurnAttack();
         turnGuideText.Fade().Forget();
@@ -124,10 +128,10 @@ public class TurnController : MonoBehaviour
         
         await turnUI.FightUI(player1DefensePower, player2AttackPower);
 
-        playerInfo.Player1Damaged(damage);
+        player1.PlayerDamaged(damage);
         Debug.Log($"총 {damage} 만큼의 피해를 받았습니다.");
         battlePhase = BattlePhase.Player1Attack;
-        diceController.ResetDice().Forget();
+        diceController.ResetDice();
 
         Player1TurnAttack();
         turnGuideText.Fade().Forget();

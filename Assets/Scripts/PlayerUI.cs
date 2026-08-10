@@ -8,21 +8,25 @@ public class PlayerUI : MonoBehaviour
     [SerializeField] private TMP_Text player1HpText;
     [SerializeField] private TMP_Text player2HpText;
 
-    private PlayerInfo playerInfo;
+    private PlayerInfo player1;
+    private PlayerInfo player2;
 
     [Inject]
-    public void Construct(PlayerInfo playerInfo)
+    public void Construct(
+        [Key(PlayerKey.Player1)]PlayerInfo player1,
+        [Key(PlayerKey.Player2)]PlayerInfo player2)
     {
-        this.playerInfo = playerInfo;
+        this.player1 = player1;
+        this.player2 = player2;
     }
 
     private void Start()
     {
-        playerInfo.Player1Hp
+        player1.PlayerHp
             .Subscribe(Player1HpUpdateUI)
             .AddTo(this);
 
-        playerInfo.Player2Hp
+        player2.PlayerHp
             .Subscribe(Player2HpUpdateUI)
             .AddTo(this);
     }

@@ -14,10 +14,7 @@ public class DiceView : MonoBehaviour
     }
 
     public void PlayRoll(int result)
-    {
-        if (result < 1 || result > 6)
-            return;
-        
+    {   
         rollSequence?.Kill();
 
         Vector3 targetRotation = resultRotations[result - 1];

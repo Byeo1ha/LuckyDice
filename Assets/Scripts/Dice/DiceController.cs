@@ -1,11 +1,11 @@
-using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using R3;
 using UnityEngine;
 
 public class DiceController : MonoBehaviour
 {
-    [SerializeField] private DiceRoll[] diceRolls;
+    [SerializeField] private List<DiceRoll> diceRolls = new List<DiceRoll>();
     [SerializeField] private int maxReRollCount = 3;
 
     public ReactiveProperty<int> power = new(0);
@@ -24,7 +24,7 @@ public class DiceController : MonoBehaviour
         currentReRollCount = maxReRollCount;
 
         power.Value = 0;
-        for (int i = 0; i < diceRolls.Length; i++)
+        for (int i = 0; i < diceRolls.Count; i++)
         {
             int result = diceRolls[i].Roll();
             power.Value += result;
@@ -41,7 +41,7 @@ public class DiceController : MonoBehaviour
 
         int doneRoll = 0;
 
-        for (int i = 0; i < diceRolls.Length; i++)
+        for (int i = 0; i < diceRolls.Count; i++)
         {
             if (!diceRolls[i].IsSelected)
                 continue;
@@ -64,11 +64,9 @@ public class DiceController : MonoBehaviour
         currentReRollCount --;
     }
 
-    public async UniTask ResetDice()
+    public void ResetDice()
     {
         power.Value = 0;
-
-        await UniTask.NextFrame();
 
         StartRoll();
     }

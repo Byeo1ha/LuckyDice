@@ -3,20 +3,12 @@ using UnityEngine;
 
 public class PlayerInfo : MonoBehaviour
 {
-    public ReactiveProperty<int> Player1Hp = new(100);
-    public ReactiveProperty<int> Player2Hp = new(100);
+    public ReactiveProperty<int> PlayerHp = new(100);
 
-    public void Player1Damaged(int damage)
+    public void PlayerDamaged(int damage)
     {
-        Player1Hp.Value -= damage;
+        PlayerHp.Value -= damage;
 
-        if (Player1Hp.Value < 0) Player1Hp.Value = 0;
-    }
-
-    public void Player2Damaged(int damage)
-    {
-        Player2Hp.Value -= damage;
-
-        if (Player2Hp.Value < 0) Player2Hp.Value = 0;
+        if (PlayerHp.Value < 0) PlayerHp.Value = 0;
     }
 }

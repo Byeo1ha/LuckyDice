@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using R3;
 using VContainer;
+using System;
 
 [RequireComponent(typeof(TurnGuideText))]
 public class TurnController : MonoBehaviour
@@ -13,6 +14,8 @@ public class TurnController : MonoBehaviour
 
     private PlayerInfo player1;
     private PlayerInfo player2;
+
+    private Action<int> FinalPowerAction;
 
     private int power;
     private int player1AttackPower;
@@ -51,7 +54,7 @@ public class TurnController : MonoBehaviour
 
     private void Start()
     {
-        diceController.power
+        diceController.finalPower
             .Subscribe(power => this.power = power)
             .AddTo(this);
 

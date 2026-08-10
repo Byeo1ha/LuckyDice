@@ -1,16 +1,35 @@
-using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
+using System;
 using R3;
 using UnityEngine;
 
 public class DiceController : MonoBehaviour
 {
-    [SerializeField] private List<DiceRoll> diceRolls = new List<DiceRoll>();
+    [SerializeField] private DiceRoll[] diceRolls;
     [SerializeField] private int maxReRollCount = 3;
 
-    public ReactiveProperty<int> power = new(0);
+    [SerializeField] private int[] diceValue;
+
+    public ReactiveProperty<int> defaultPower = new(0);
+    public ReactiveProperty<int> bonusPower = new(0);
+    public ReactiveProperty<int> finalPower = new(0);
     
     private int currentReRollCount; 
+    private DiceHandEvaluator diceHandEvaluator;
+
+    [Header("보너스 점수")]
+    [SerializeField] private int luckyPower = 70;
+    [SerializeField] private int fourPower = 50;
+    [SerializeField] private int straightPower = 40;
+    [SerializeField] private int fullHousePower = 30;
+    [SerializeField] private int triplePower = 20;
+    [SerializeField] private int pairTwoPower = 15;
+    [SerializeField] private int pairOnePower = 10;
+
+    private void Awake()
+    {
+        diceValue = new int[diceRolls.Length];
+        diceHandEvaluator = new DiceHandEvaluator();
+    }
 
     private void Start()
     {
@@ -23,12 +42,18 @@ public class DiceController : MonoBehaviour
 
         currentReRollCount = maxReRollCount;
 
-        power.Value = 0;
-        for (int i = 0; i < diceRolls.Count; i++)
+        defaultPower.Value = 0;
+        for (int i = 0; i < diceRolls.Length; i++)
         {
             int result = diceRolls[i].Roll();
-            power.Value += result;
+            diceValue[i] = result;
+            
+            defaultPower.Value += result;
         }
+
+        DiceHandResult();
+        finalPower.Value = defaultPower.Value + bonusPower.Value;
+        Debug.Log(finalPower.Value);
     }
 
     public void ReRoll()
@@ -41,7 +66,7 @@ public class DiceController : MonoBehaviour
 
         int doneRoll = 0;
 
-        for (int i = 0; i < diceRolls.Count; i++)
+        for (int i = 0; i < diceRolls.Length; i++)
         {
             if (!diceRolls[i].IsSelected)
                 continue;
@@ -50,8 +75,9 @@ public class DiceController : MonoBehaviour
 
             int newResult = diceRolls[i].Roll();
 
-            power.Value -= previousResult;
-            power.Value += newResult;
+            diceValue[i] = newResult;
+            defaultPower.Value -= previousResult;
+            defaultPower.Value += newResult;
             doneRoll ++;
         }
 
@@ -61,13 +87,49 @@ public class DiceController : MonoBehaviour
             return;
         }
 
+        DiceHandResult();
         currentReRollCount --;
+        finalPower.Value = defaultPower.Value + bonusPower.Value;
+        Debug.Log(finalPower.Value);
     }
 
     public void ResetDice()
     {
-        power.Value = 0;
+        defaultPower.Value = 0;
+        bonusPower.Value = 0;
+        finalPower.Value = 0;
 
         StartRoll();
+    }
+
+    private void DiceHandResult()
+    {
+        DiceHand result = diceHandEvaluator.Evaluate(diceValue);
+        switch (result)
+        {
+            case DiceHand.Lucky:
+                bonusPower.Value = luckyPower;
+                break;
+            case DiceHand.Four:
+                bonusPower.Value = fourPower;
+                break;
+            case DiceHand.Straight:
+                bonusPower.Value = straightPower;
+                break;
+            case DiceHand.FullHouse:
+                bonusPower.Value = fullHousePower;
+                break;
+            case DiceHand.Triple:
+                bonusPower.Value = triplePower;
+                break;
+            case DiceHand.Pair_2:
+                bonusPower.Value = pairTwoPower;
+                break;
+            case DiceHand.Pair_1:
+                bonusPower.Value = pairOnePower;
+                break;
+            case DiceHand.None:
+                return;
+        }
     }
 }

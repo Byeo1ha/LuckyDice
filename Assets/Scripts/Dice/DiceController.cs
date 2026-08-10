@@ -1,6 +1,7 @@
-using System;
+using Cysharp.Threading.Tasks;
 using R3;
 using UnityEngine;
+using VContainer;
 
 public class DiceController : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class DiceController : MonoBehaviour
     
     private int currentReRollCount; 
     private DiceHandEvaluator diceHandEvaluator;
+    private SafetyBorder safetyBorder;
 
     [Header("보너스 점수")]
     [SerializeField] private int luckyPower = 70;
@@ -24,6 +26,12 @@ public class DiceController : MonoBehaviour
     [SerializeField] private int triplePower = 20;
     [SerializeField] private int pairTwoPower = 15;
     [SerializeField] private int pairOnePower = 10;
+
+    [Inject]
+    public void Construct(SafetyBorder safetyBorder)
+    {
+        this.safetyBorder = safetyBorder;
+    }
 
     private void Awake()
     {
@@ -41,6 +49,8 @@ public class DiceController : MonoBehaviour
         if (diceRolls == null) return;
 
         currentReRollCount = maxReRollCount;
+
+        safetyBorder.BlockUIInteraction(1f).Forget();
 
         defaultPower.Value = 0;
         for (int i = 0; i < diceRolls.Length; i++)
@@ -68,6 +78,19 @@ public class DiceController : MonoBehaviour
 
         for (int i = 0; i < diceRolls.Length; i++)
         {
+            if (diceRolls[i].IsSelected) doneRoll++;
+        }
+
+        if (doneRoll < 1)
+        {
+            Debug.Log("선택한 주사위가 없어서 진행하지 못했습니다.");
+            return;
+        }
+
+        safetyBorder.BlockUIInteraction(1f).Forget();
+
+        for (int i = 0; i < diceRolls.Length; i++)
+        {
             if (!diceRolls[i].IsSelected)
                 continue;
 
@@ -79,12 +102,6 @@ public class DiceController : MonoBehaviour
             defaultPower.Value -= previousResult;
             defaultPower.Value += newResult;
             doneRoll ++;
-        }
-
-        if (doneRoll < 1)
-        {
-            Debug.Log("선택한 주사위가 없어서 진행하지 못했습니다.");
-            return;
         }
 
         DiceHandResult();

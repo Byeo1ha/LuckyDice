@@ -15,6 +15,7 @@ public class GameLifetimeScope : LifetimeScope
         builder.RegisterComponentInHierarchy<DiceUI>();
 
         builder.RegisterComponentInHierarchy<PlayerUI>();
+        builder.RegisterComponentInHierarchy<SafetyBorder>();
 
         builder.RegisterComponent(player1).Keyed(PlayerKey.Player1);
         builder.RegisterComponent(player2).Keyed(PlayerKey.Player2);

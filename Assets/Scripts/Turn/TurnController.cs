@@ -2,7 +2,6 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using R3;
 using VContainer;
-using System;
 
 [RequireComponent(typeof(TurnGuideText))]
 public class TurnController : MonoBehaviour
@@ -15,7 +14,7 @@ public class TurnController : MonoBehaviour
     private PlayerInfo player1;
     private PlayerInfo player2;
 
-    private Action<int> FinalPowerAction;
+    private SafetyBorder safetyBorder;
 
     private int power;
     private int player1AttackPower;
@@ -36,11 +35,13 @@ public class TurnController : MonoBehaviour
     [Inject]
     public void Construct(
         DiceController diceController,
+        SafetyBorder safetyBorder,
         [Key(PlayerKey.Player1)]PlayerInfo player1,
         [Key(PlayerKey.Player2)]PlayerInfo player2
         )
     {
         this.diceController = diceController;
+        this.safetyBorder = safetyBorder;
         this.player1 = player1;
         this.player2 = player2;
         
@@ -87,6 +88,7 @@ public class TurnController : MonoBehaviour
     private async void StartPlayer1Defense()
     {
         battlePhase = BattlePhase.Player1Defense;
+        safetyBorder.BlockUIInteraction(5f).Forget();
 
         await turnUI.ShowAlertPannel();
 
@@ -97,6 +99,7 @@ public class TurnController : MonoBehaviour
     private async void StartPlayer2Defense()
     {
         battlePhase = BattlePhase.Player2Defense;
+        safetyBorder.BlockUIInteraction(5f).Forget();
 
         await turnUI.ShowAlertPannel();
 
@@ -106,6 +109,7 @@ public class TurnController : MonoBehaviour
 
     private async void StartPlayer1AttackFight()
     {
+        safetyBorder.BlockUIInteraction(10f).Forget();
         await turnUI.ShowAlertPannel();
 
         int damage = player1AttackPower - player2DefensePower;
@@ -124,6 +128,7 @@ public class TurnController : MonoBehaviour
 
     private async void StartPlayer2AttackFight()
     {
+        safetyBorder.BlockUIInteraction(10f).Forget();
         await turnUI.ShowAlertPannel();
 
         int damage = player2AttackPower - player1DefensePower;

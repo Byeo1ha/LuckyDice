@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(DiceView))]
 public class DiceRoll : MonoBehaviour
@@ -8,16 +9,6 @@ public class DiceRoll : MonoBehaviour
 
     public int CurrentResult { get; private set; }
     public bool IsSelected { get; private set; }
-
-    public enum DiceType
-    {
-        D4,
-        D6
-    }
-
-    [SerializeField] private DiceType diceType;
-
-    public DiceType DT => diceType;
 
     private void Awake()
     {
@@ -30,15 +21,7 @@ public class DiceRoll : MonoBehaviour
         IsSelected = false;
         outLine.SetActive(IsSelected);
 
-        switch (diceType)
-        {
-            case DiceType.D4:
-                CurrentResult = Random.Range(1, 5);
-                break;
-            case DiceType.D6:
-                CurrentResult = Random.Range(1, 7);
-                break;
-        }
+        CurrentResult = Random.Range(1, 7);
         
         diceView.PlayRoll(CurrentResult);
         
@@ -47,6 +30,8 @@ public class DiceRoll : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (EventSystem.current.IsPointerOverGameObject()) return;
+
         IsSelected = !IsSelected;
         outLine.SetActive(IsSelected);
     }

@@ -1,3 +1,4 @@
+using System;
 using Cysharp.Threading.Tasks;
 using R3;
 using UnityEngine;
@@ -13,13 +14,16 @@ public class DiceController : MonoBehaviour
     public ReactiveProperty<int> defaultPower = new(0);
     public ReactiveProperty<int> bonusPower = new(0);
     public ReactiveProperty<int> finalPower = new(0);
-    
-    private int currentReRollCount; 
+
+    public ReactiveProperty<int> currentReRollCount; 
+
+    public event Action FailReRollEvent;
+
     private DiceHandEvaluator diceHandEvaluator;
     private SafetyBorder safetyBorder;
 
     [Header("보너스 점수")]
-    [SerializeField] private int luckyPower = 70;
+    [SerializeField] private int luckyPower = 80;
     [SerializeField] private int fourPower = 50;
     [SerializeField] private int straightPower = 40;
     [SerializeField] private int fullHousePower = 30;
@@ -37,6 +41,7 @@ public class DiceController : MonoBehaviour
     {
         diceValue = new int[diceRolls.Length];
         diceHandEvaluator = new DiceHandEvaluator();
+        currentReRollCount = new(maxReRollCount);
     }
 
     private void Start()
@@ -48,7 +53,7 @@ public class DiceController : MonoBehaviour
     {
         if (diceRolls == null) return;
 
-        currentReRollCount = maxReRollCount;
+        currentReRollCount.Value = maxReRollCount;
 
         safetyBorder.BlockUIInteraction(1f).Forget();
 
@@ -68,7 +73,7 @@ public class DiceController : MonoBehaviour
 
     public void ReRoll()
     {
-        if (currentReRollCount < 1)
+        if (currentReRollCount.Value < 1)
         {
             Debug.Log("리롤 횟수를 모두 사용하였습니다.");
             return;
@@ -84,6 +89,7 @@ public class DiceController : MonoBehaviour
         if (doneRoll < 1)
         {
             Debug.Log("선택한 주사위가 없어서 진행하지 못했습니다.");
+            FailReRollEvent?.Invoke();
             return;
         }
 
@@ -105,7 +111,7 @@ public class DiceController : MonoBehaviour
         }
 
         DiceHandResult();
-        currentReRollCount --;
+        currentReRollCount.Value --;
         finalPower.Value = defaultPower.Value + bonusPower.Value;
         Debug.Log(finalPower.Value);
     }
@@ -121,6 +127,7 @@ public class DiceController : MonoBehaviour
 
     private void DiceHandResult()
     {
+        bonusPower.Value = 0;
         DiceHand result = diceHandEvaluator.Evaluate(diceValue);
         switch (result)
         {

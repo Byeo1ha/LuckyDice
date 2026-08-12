@@ -9,9 +9,7 @@ public class DiceUI : MonoBehaviour
     [SerializeField] private TMP_Text defaultPowerText;
     [SerializeField] private TMP_Text plusText;
     [SerializeField] private TMP_Text bonusPowerText;
-    [SerializeField] private GameObject rollButton;
-    [SerializeField] private GameObject finishButton;
-    [SerializeField] private GameObject reRollButton;
+    [SerializeField] private TMP_Text reRollCountText;
 
     private DiceController diceController;
     private Sequence defaultPowerAnimation;
@@ -39,6 +37,10 @@ public class DiceUI : MonoBehaviour
         diceController.bonusPower
             .Subscribe(BonusPowerFade)
             .AddTo(this);
+
+        diceController.currentReRollCount
+            .Subscribe(UpdateReRollCountUI)
+            .AddTo(this);
     }
 
     private void UpdateDefaultPowerUI(int power)
@@ -49,6 +51,11 @@ public class DiceUI : MonoBehaviour
     private void UpdateBonusPowerUI(int power)
     {
         bonusPowerText.text = power.ToString();
+    }
+
+    private void UpdateReRollCountUI(int count)
+    {
+        reRollCountText.text = count.ToString();
     }
 
     private void DefaultPowerFade(int power)

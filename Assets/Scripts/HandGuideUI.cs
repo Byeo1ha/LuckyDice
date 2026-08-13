@@ -27,7 +27,6 @@ public class HandGuideUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     private void MouseEnter()
     {
-        Debug.Log("내려옵니다.");
         uiSlideAnim?.Kill();
         uiSlideAnim = DOTween.Sequence();
 
@@ -42,7 +41,6 @@ public class HandGuideUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     private void MouseExit()
     {
-        Debug.Log("올라갑니다.");
         uiSlideAnim?.Kill();
         uiSlideAnim = DOTween.Sequence();
         

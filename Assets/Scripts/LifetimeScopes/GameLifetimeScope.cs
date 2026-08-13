@@ -11,11 +11,14 @@ public class GameLifetimeScope : LifetimeScope
     {
         builder.RegisterComponentInHierarchy<DiceController>();
         builder.RegisterComponentInHierarchy<TurnController>();
+        builder.RegisterComponentInHierarchy<DiceNetworkController>();
 
         builder.RegisterComponentInHierarchy<DiceUI>();
 
         builder.RegisterComponentInHierarchy<PlayerUI>();
         builder.RegisterComponentInHierarchy<SafetyBorder>();
+
+        builder.RegisterComponentInHierarchy<NetworkPlayerManager>();
 
         builder.RegisterComponent(player1).Keyed(PlayerKey.Player1);
         builder.RegisterComponent(player2).Keyed(PlayerKey.Player2);

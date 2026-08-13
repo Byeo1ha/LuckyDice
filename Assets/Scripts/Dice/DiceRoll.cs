@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 public class DiceRoll : MonoBehaviour
 {
     [SerializeField] private GameObject outLine;
+
     private DiceView diceView;
 
     public int CurrentResult { get; private set; }
@@ -18,14 +19,20 @@ public class DiceRoll : MonoBehaviour
 
     public int Roll()
     {
+        int result = Random.Range(1, 7);
+        
+        ApplyResult(result);
+        
+        return result;
+    }
+
+    public void ApplyResult(int result)
+    {
         IsSelected = false;
         outLine.SetActive(IsSelected);
 
-        CurrentResult = Random.Range(1, 7);
-        
-        diceView.PlayRoll(CurrentResult);
-        
-        return CurrentResult;
+        CurrentResult = result;
+        diceView.PlayRoll(result);
     }
 
     private void OnMouseDown()

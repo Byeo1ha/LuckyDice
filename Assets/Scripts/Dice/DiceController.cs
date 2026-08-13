@@ -46,7 +46,7 @@ public class DiceController : MonoBehaviour
 
     private void Start()
     {
-        StartRoll();
+        //StartRoll();
     }
 
     public void StartRoll()
@@ -61,14 +61,53 @@ public class DiceController : MonoBehaviour
         for (int i = 0; i < diceRolls.Length; i++)
         {
             int result = diceRolls[i].Roll();
+
             diceValue[i] = result;
-            
             defaultPower.Value += result;
         }
 
         DiceHandResult();
         finalPower.Value = defaultPower.Value + bonusPower.Value;
         Debug.Log(finalPower.Value);
+    }
+
+    public int[] RollAllDice()
+    {
+        int[] results = new int[diceRolls.Length];
+
+        for (int i = 0; i < diceRolls.Length; i++)
+        {
+            results[i] = diceRolls[i].Roll();
+        }
+
+        ApplyDiceValues(results);
+
+        return results;
+    }
+
+    public void ApplyRollResults(int[] results)
+    {
+        for (int i = 0; i < diceRolls.Length; i++)
+        {
+            diceRolls[i].ApplyResult(results[i]);
+        }
+
+        ApplyDiceValues(results);
+    }
+
+    private void ApplyDiceValues(int[] results)
+    {
+        defaultPower.Value = 0;
+
+        for (int i = 0; i < results.Length; i++)
+        {
+            diceValue[i] = results[i];
+            defaultPower.Value += results[i];
+        }
+
+        DiceHandResult();
+
+        finalPower.Value = defaultPower.Value + bonusPower.Value;
     }
 
     public void ReRoll()
